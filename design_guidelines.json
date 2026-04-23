@@ -1,0 +1,162 @@
+{
+  "project_name": "MoveInvestor Gaming Marketplace",
+  "domain": "Crypto Card Game Marketplace",
+  "theme": "dark",
+  "archetype": "7 (Electric & Neon)",
+  "language": "ru",
+  "design_philosophy": {
+    "core_principles": [
+      "Tactile 3D Interactions: Buttons and interactive elements must feel physical, like an arcade machine or a high-end web3 game interface.",
+      "Luminous Hierarchy: Use neon glows to establish rarity and importance. Common items have minimal glow, Legendary items command the screen.",
+      "Void & Glass: Deep space black backgrounds contrasted with highly saturated neon accents and frosted glass panels (Glassmorphism) to create depth."
+    ],
+    "anti_patterns": [
+      "No generic purple-to-blue linear backgrounds. Use dark textured voids.",
+      "Do not use Inter or generic sans-serif for headings. Use aggressive, technical fonts.",
+      "Avoid flat, lifeless buttons. Everything interactive must respond to hover/click with depth."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "headings": {
+        "family": "'Rajdhani', sans-serif",
+        "weight": "700",
+        "usage": "H1, H2, H3, buttons, tab labels",
+        "google_font_url": "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap"
+      },
+      "data_numbers": {
+        "family": "'Space Mono', monospace",
+        "weight": "700",
+        "usage": "Crypto balances, prices, progress bar stats (1/5), timers",
+        "google_font_url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      },
+      "body": {
+        "family": "'Outfit', sans-serif",
+        "weight": "400",
+        "usage": "Descriptions, minor UI labels",
+        "google_font_url": "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap"
+      }
+    },
+    "scales": {
+      "h1": "text-4xl md:text-5xl lg:text-6xl tracking-tight uppercase",
+      "h2": "text-2xl md:text-3xl lg:text-4xl tracking-tight uppercase",
+      "h3": "text-xl md:text-2xl font-bold uppercase",
+      "data_large": "text-2xl md:text-3xl font-mono text-neon-cyan",
+      "body": "text-sm md:text-base text-gray-300"
+    }
+  },
+  "color_system": {
+    "backgrounds": {
+      "app_void": "#030305",
+      "surface_base": "rgba(255, 255, 255, 0.02)",
+      "surface_glass": "rgba(10, 10, 15, 0.6)",
+      "panel_raised": "rgba(255, 255, 255, 0.05)"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#94A3B8",
+      "muted": "#475569"
+    },
+    "accents": {
+      "cyan": "#00F0FF",
+      "magenta": "#FF00FF",
+      "yellow": "#FFD700"
+    },
+    "rarity_system": {
+      "common": {
+        "hex": "#94A3B8",
+        "bg_glow": "rgba(148, 163, 184, 0.1)",
+        "border_glow": "rgba(148, 163, 184, 0.4)",
+        "shadow": "0 0 10px rgba(148, 163, 184, 0.2)"
+      },
+      "rare": {
+        "hex": "#00F0FF",
+        "bg_glow": "rgba(0, 240, 255, 0.15)",
+        "border_glow": "rgba(0, 240, 255, 0.6)",
+        "shadow": "0 0 15px rgba(0, 240, 255, 0.4), inset 0 0 10px rgba(0, 240, 255, 0.2)"
+      },
+      "epic": {
+        "hex": "#B026FF",
+        "bg_glow": "rgba(176, 38, 255, 0.15)",
+        "border_glow": "rgba(176, 38, 255, 0.8)",
+        "shadow": "0 0 20px rgba(176, 38, 255, 0.6), inset 0 0 15px rgba(176, 38, 255, 0.3)"
+      },
+      "legendary": {
+        "hex": "#FFB800",
+        "bg_glow": "rgba(255, 184, 0, 0.2)",
+        "border_glow": "rgba(255, 184, 0, 1)",
+        "shadow": "0 0 30px rgba(255, 184, 0, 0.8), inset 0 0 20px rgba(255, 184, 0, 0.5)"
+      }
+    }
+  },
+  "component_strategies": {
+    "header": {
+      "style": "sticky top-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/5",
+      "elements": "Logo 'MoveInvestor', Navigation links, RU/EN selector, TESTNET badge (neon yellow border & text), Wallet balance (Space Mono) and Disconnect button"
+    },
+    "bento_stats_row": {
+      "style": "grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 w-full",
+      "card_style": "backdrop-blur-md bg-white/[0.02] border border-white/10 rounded-xl p-6 flex flex-col justify-center",
+      "data_style": "text-2xl md:text-3xl font-mono text-cyan-400 mt-2",
+      "label_style": "text-xs md:text-sm font-bold text-gray-400 uppercase tracking-widest"
+    },
+    "tactile_button": {
+      "primary": "relative bg-gradient-to-b from-cyan-400 to-cyan-600 text-black font-bold uppercase tracking-wider rounded border border-cyan-300 shadow-[0_4px_0_0_#0891b2,0_10px_20px_rgba(0,240,255,0.4)] hover:shadow-[0_2px_0_0_#0891b2,0_10px_20px_rgba(0,240,255,0.4)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all px-6 py-3",
+      "secondary": "relative bg-gradient-to-b from-gray-800 to-gray-900 text-white font-bold uppercase tracking-wider rounded border border-gray-600 shadow-[0_4px_0_0_#475569] hover:shadow-[0_2px_0_0_#475569] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all px-6 py-3"
+    },
+    "gaming_tabs": {
+      "container": "flex space-x-2 border-b border-white/10 overflow-x-auto no-scrollbar",
+      "active": "text-cyan-400 border-b-2 border-cyan-400 bg-cyan-400/10 shadow-[inset_0_-2px_8px_rgba(0,240,255,0.2)] px-4 py-3 uppercase tracking-widest text-sm font-bold transition-all whitespace-nowrap",
+      "inactive": "text-gray-400 hover:text-white hover:bg-white/5 border-b-2 border-transparent px-4 py-3 uppercase tracking-widest text-sm font-bold transition-all whitespace-nowrap"
+    },
+    "lootbox_3d_simulation": {
+      "description": "Since actual 3D models aren't available, build a 3D-like CSS/Framer Motion composite component.",
+      "structure": "Container with Framer Motion floating animation (y: [0, -15, 0], duration: 4, repeat: Infinity, ease: 'easeInOut'). Inside: a central glowing SVG/Lucide icon (like Box or Package) heavily scaled up. Background of the container has a massive radial gradient corresponding to rarity color. A separate Framer Motion component generates 10-20 tiny div 'particles' floating upwards.",
+      "auras": "Use drop-shadow and box-shadow to create a multi-layered glow around the 'chest'.",
+      "layout": "Grid of 3 columns (Hamster, Bear, Bull). Buy button and Open button below each."
+    },
+    "glassmorphism_card": {
+      "base": "relative backdrop-blur-xl bg-[#0B0C10]/80 rounded-xl overflow-hidden group transition-all duration-300 hover:-translate-y-2 flex flex-col",
+      "rarity_border": "Absolute inset-0 rounded-xl border-2 pointer-events-none transition-colors duration-300",
+      "content_padding": "p-5",
+      "inner_layout": "Header (Coin Icon + Ticker + Type Badge + NEW badge) -> Main Price (Monospace) -> Upgrade Progress Bar -> Action Buttons",
+      "lightning_effect": "For Rare/Epic/Legendary: Implement a decorative Framer Motion SVG path drawing effect or a rotating CSS gradient masked to the border to simulate energy/lightning around the card edge."
+    },
+    "progress_bar": {
+      "container": "w-full h-3 bg-gray-900 rounded-full overflow-hidden border border-white/10 mt-4",
+      "fill": "h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full relative",
+      "glow_tip": "absolute right-0 top-0 bottom-0 w-4 bg-white blur-[2px]",
+      "label": "flex justify-between text-[10px] font-mono mt-1 text-gray-400 tracking-wider"
+    },
+    "badges": {
+      "type_badge": "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white/10 text-white border border-white/20",
+      "new_badge": "px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 animate-pulse"
+    }
+  },
+  "effects": {
+    "particles": {
+      "implementation": "Use Framer Motion. Create a 'Particles' React component that maps an array of 20 elements. Each element is a tiny circle (w-1 h-1 or w-2 h-2), colored by the rarity hex, with an animate={{ y: ['0%', '-100%'], opacity: [0, 1, 0] }} and randomized delay/duration."
+    },
+    "chest_open_animation": {
+      "description": "When 'Открыть' is clicked, show a full-screen overlay (Framer Motion AnimatePresence). The chest scales up, shakes, a flash of white light (opacity 0 to 1) fills the screen, and then reveals the acquired crypto card with massive particle explosions."
+    }
+  },
+  "media": {
+    "background_image": {
+      "url": "https://images.unsplash.com/photo-1771873680097-7506773a2b02?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1Mjh8MHwxfHNlYXJjaHwyfHxkYXJrJTIwc3BhY2UlMjBncmlkJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzY5NTM1NjJ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract dark space grid with glowing accents. To be used as an app-wide fixed background with opacity-20 and blend-mode-screen."
+    },
+    "fallback_icons": "Instruct the main agent to use lucide-react (e.g., Box, Package, Zap, Activity, Bitcoin) with heavy CSS drop-shadows as the primary 3D elements if custom SVG models are not available."
+  },
+  "instructions_to_main_agent": [
+    "Load Google Fonts: Rajdhani (400,600,700), Space Mono (400,700), Outfit (400,500).",
+    "Use standard Tailwind classes. Implement the custom tactile button strictly using the provided shadow array.",
+    "For the Lootboxes, create a <Lootbox3D> component using Framer Motion to make it float. Surround it with a <Particles> component that emits dots matching the chest's rarity color.",
+    "For the Marketplace grid, map out the crypto assets provided in the problem statement (BTC, BNB, DOGE, TRX, SHIB, LINK, LTC, ICP, OKB, XLM, IMX, CRO, ALGO, GRT, FTM, EOS, LDO, KAS, BONK). Assign them random rarities (Common, Rare, Epic, Legendary).",
+    "Cards MUST use the rarity color for their border and box-shadow (glow).",
+    "Implement the Tabs (Все монеты, Layer 1, Exchange, Meme, Infrastructure, DeFi, Layer 2) and Rarity Filters. They should actually filter the mapped crypto list.",
+    "Add data-testid to every button, tab, and card for testing.",
+    "Ensure the UI is entirely in Russian as requested.",
+    "The layout should be dense but clean, using the bento grid for stats at the top, followed by the Lootbox showcase (3 big items), and then the Marketplace filters and card grid."
+  ]
+}
