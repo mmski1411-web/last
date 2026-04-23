@@ -1,52 +1,67 @@
 import React, { useState } from 'react';
-import { Wallet, ShoppingCart, TrendingUp, Trophy, BarChart3, Power, ChevronDown, Plug } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import {
+  Wallet,
+  ShoppingCart,
+  TrendingUp,
+  Trophy,
+  BarChart3,
+  Power,
+  ChevronDown,
+  Plug,
+} from 'lucide-react';
+import { useConnection } from '../context/ConnectionContext';
 
 const NAV = [
-  { id: 'wallet', label: 'Кошелёк', icon: Wallet },
-  { id: 'marketplace', label: 'Маркетплейс', icon: ShoppingCart, active: true },
-  { id: 'investing', label: 'Инвестирование', icon: TrendingUp },
-  { id: 'rating', label: 'Рейтинг', icon: BarChart3 },
-  { id: 'leaderboard', label: 'Лидерборд', icon: Trophy },
+  { id: 'wallet', label: 'Кошелёк', icon: Wallet, path: '/wallet' },
+  { id: 'marketplace', label: 'Маркетплейс', icon: ShoppingCart, path: '/' },
+  { id: 'investing', label: 'Инвестирование', icon: TrendingUp, path: '/investing' },
+  { id: 'rating', label: 'Рейтинг', icon: BarChart3, path: '/rating' },
+  { id: 'leaderboard', label: 'Лидерборд', icon: Trophy, path: '/leaderboard' },
 ];
 
 const shortAddr = (a) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '');
 
-const Header = ({ connection, onConnect, onDisconnect }) => {
-  const [active, setActive] = useState('marketplace');
+const Header = () => {
+  const location = useLocation();
+  const { connection, disconnect, setWalletOpen } = useConnection();
   const [lang, setLang] = useState('RU');
   const isConnected = !!connection?.address;
 
   return (
-    <header
-      className="sticky top-0 z-50 glass border-b border-white/5"
-      data-testid="site-header"
-    >
+    <header className="sticky top-0 z-50 glass border-b border-white/5" data-testid="site-header">
       <div className="max-w-[1440px] mx-auto flex items-center gap-6 px-4 md:px-8 py-3">
         {/* Logo */}
-        <div className="flex items-center gap-2" data-testid="brand-logo">
-          <div className="relative w-9 h-9 rounded-lg flex items-center justify-center font-display font-bold text-lg"
+        <Link to="/" className="flex items-center gap-2" data-testid="brand-logo">
+          <div
+            className="relative w-9 h-9 rounded-lg flex items-center justify-center font-display font-bold text-lg"
             style={{
               background: 'linear-gradient(135deg, #00F0FF, #B026FF)',
               boxShadow: '0 0 16px rgba(0,240,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
-            }}>
+            }}
+          >
             <span className="text-black drop-shadow">MI</span>
           </div>
           <div className="leading-tight">
-            <div className="font-display text-lg font-bold tracking-wider text-white">MoveInvestor</div>
-            <div className="text-[9px] font-mono-data tracking-widest text-gray-500 uppercase">Card Game v1.0</div>
+            <div className="font-display text-lg font-bold tracking-wider text-white">
+              MoveInvestor
+            </div>
+            <div className="text-[9px] font-mono-data tracking-widest text-gray-500 uppercase">
+              Card Game v1.0
+            </div>
           </div>
-        </div>
+        </Link>
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-1 ml-4">
           {NAV.map((n) => {
             const Icon = n.icon;
-            const isActive = active === n.id;
+            const isActive = location.pathname === n.path;
             return (
-              <button
+              <Link
                 key={n.id}
+                to={n.path}
                 data-testid={`nav-${n.id}`}
-                onClick={() => setActive(n.id)}
                 className={`font-display font-bold text-sm uppercase tracking-widest px-4 py-2 rounded-md transition-all flex items-center gap-2 ${
                   isActive
                     ? 'text-cyan-400 bg-cyan-400/10'
@@ -56,14 +71,14 @@ const Header = ({ connection, onConnect, onDisconnect }) => {
               >
                 <Icon size={14} />
                 {n.label}
-              </button>
+              </Link>
             );
           })}
         </nav>
 
         <div className="flex-1" />
 
-        {/* Lang switcher */}
+        {/* Lang */}
         <div className="hidden sm:flex items-center gap-1 text-xs font-display font-bold">
           {['RU', 'EN'].map((l) => (
             <button
@@ -79,32 +94,37 @@ const Header = ({ connection, onConnect, onDisconnect }) => {
           ))}
         </div>
 
-        {/* TESTNET */}
-        <span className="testnet-badge hidden md:inline-block" data-testid="testnet-badge">TESTNET</span>
+        <span className="testnet-badge hidden md:inline-block" data-testid="testnet-badge">
+          TESTNET
+        </span>
 
         {isConnected ? (
           <>
-            {/* Wallet balance + address */}
             <div
               className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md glass-light"
               data-testid="wallet-balance"
               title={connection.address}
             >
-              <div className="w-6 h-6 rounded-full flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #00F0FF, #B026FF)' }}>
+              <div
+                className="w-6 h-6 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #00F0FF, #B026FF)' }}
+              >
                 <Wallet size={12} className="text-black" />
               </div>
               <div className="flex flex-col leading-tight">
-                <span className="font-mono-data text-sm font-bold text-white">{connection.balance.toFixed(2)} <span className="text-xs text-gray-400 font-display">MOVE</span></span>
-                <span className="font-mono-data text-[10px] text-gray-400">{shortAddr(connection.address)}</span>
+                <span className="font-mono-data text-sm font-bold text-white">
+                  {connection.balance.toFixed(2)}{' '}
+                  <span className="text-xs text-gray-400 font-display">MOVE</span>
+                </span>
+                <span className="font-mono-data text-[10px] text-gray-400">
+                  {shortAddr(connection.address)}
+                </span>
               </div>
               <ChevronDown size={12} className="text-gray-500" />
             </div>
-
-            {/* Disconnect */}
             <button
               data-testid="disconnect-btn"
-              onClick={onDisconnect}
+              onClick={disconnect}
               className="btn-tactile btn-tactile-ghost text-xs py-1.5 px-3 flex items-center gap-1.5"
             >
               <Power size={12} />
@@ -114,7 +134,7 @@ const Header = ({ connection, onConnect, onDisconnect }) => {
         ) : (
           <button
             data-testid="connect-btn"
-            onClick={onConnect}
+            onClick={() => setWalletOpen(true)}
             className="btn-tactile btn-tactile-cyan text-xs py-2 px-4 flex items-center gap-1.5"
           >
             <Plug size={12} />

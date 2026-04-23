@@ -7,17 +7,16 @@ import Lootbox3D from './Lootbox3D';
 import CryptoCard from './CryptoCard';
 import FilterTabs from './FilterTabs';
 import ChestOpenModal from './ChestOpenModal';
-import WalletConnectModal from './WalletConnectModal';
 import { CARDS, LOOTBOXES } from '../data/cards';
+import { useConnection } from '../context/ConnectionContext';
 
 const Marketplace = () => {
+  const { connection, setWalletOpen } = useConnection();
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeRarity, setActiveRarity] = useState('all');
   const [sort, setSort] = useState('default');
   const [openingChest, setOpeningChest] = useState(null);
   const [toast, setToast] = useState(null);
-  const [walletOpen, setWalletOpen] = useState(false);
-  const [connection, setConnection] = useState(null);
 
   const filtered = useMemo(() => {
     let list = CARDS.filter((c) => {
@@ -39,7 +38,6 @@ const Marketplace = () => {
     setTimeout(() => setToast(null), 2200);
   };
 
-  // Require connection for chest / buy interactions
   const requireWallet = () => {
     if (!connection) {
       setWalletOpen(true);
@@ -67,17 +65,9 @@ const Marketplace = () => {
 
   return (
     <div className="relative min-h-screen">
-      <Header
-        connection={connection}
-        onConnect={() => setWalletOpen(true)}
-        onDisconnect={() => {
-          setConnection(null);
-          showToast('Кошелёк отключён');
-        }}
-      />
+      <Header />
 
       <main className="relative z-[2] max-w-[1440px] mx-auto px-4 md:px-8 py-8 md:py-10 space-y-10">
-        {/* HERO */}
         <section className="space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -111,7 +101,6 @@ const Marketplace = () => {
           </div>
         </section>
 
-        {/* LOOTBOX STORE */}
         <section data-testid="lootbox-store" className="space-y-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -139,7 +128,6 @@ const Marketplace = () => {
           </div>
         </section>
 
-        {/* FILTERS + GRID */}
         <section data-testid="card-marketplace" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-wide text-white">
@@ -165,7 +153,9 @@ const Marketplace = () => {
             ))}
             {filtered.length === 0 && (
               <div className="col-span-full py-16 text-center text-gray-500">
-                <p className="font-display uppercase tracking-widest">Нет карт по выбранным фильтрам</p>
+                <p className="font-display uppercase tracking-widest">
+                  Нет карт по выбранным фильтрам
+                </p>
               </div>
             )}
           </motion.div>
@@ -191,16 +181,6 @@ const Marketplace = () => {
       {openingChest && (
         <ChestOpenModal chest={openingChest} onClose={() => setOpeningChest(null)} />
       )}
-
-      <WalletConnectModal
-        open={walletOpen}
-        onClose={() => setWalletOpen(false)}
-        onConnected={(data) => {
-          setConnection(data);
-          setWalletOpen(false);
-          showToast(`Кошелёк ${data.wallet.name} подключён`);
-        }}
-      />
     </div>
   );
 };
