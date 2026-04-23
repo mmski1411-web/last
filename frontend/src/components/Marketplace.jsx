@@ -1,12 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Flame, Sparkles } from 'lucide-react';
+import { Flame, Sparkles, Lock } from 'lucide-react';
 import Header from './Header';
 import StatsBento from './StatsBento';
 import Lootbox3D from './Lootbox3D';
 import CryptoCard from './CryptoCard';
 import FilterTabs from './FilterTabs';
 import ChestOpenModal from './ChestOpenModal';
+import WalletConnectModal from './WalletConnectModal';
 import { CARDS, LOOTBOXES } from '../data/cards';
 
 const Marketplace = () => {
@@ -15,6 +16,8 @@ const Marketplace = () => {
   const [sort, setSort] = useState('default');
   const [openingChest, setOpeningChest] = useState(null);
   const [toast, setToast] = useState(null);
+  const [walletOpen, setWalletOpen] = useState(false);
+  const [connection, setConnection] = useState(null);
 
   const filtered = useMemo(() => {
     let list = CARDS.filter((c) => {
@@ -36,12 +39,45 @@ const Marketplace = () => {
     setTimeout(() => setToast(null), 2200);
   };
 
+  // Require connection for chest / buy interactions
+  const requireWallet = () => {
+    if (!connection) {
+      setWalletOpen(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleBuyChest = (c) => {
+    if (!requireWallet()) return;
+    showToast(`Добавлен в корзину: ${c.name}`);
+  };
+  const handleOpenChest = (c) => {
+    if (!requireWallet()) return;
+    setOpeningChest(c);
+  };
+  const handleSell = (c) => {
+    if (!requireWallet()) return;
+    showToast(`Выставлено на продажу: ${c.ticker}`);
+  };
+  const handleSend = (c) => {
+    if (!requireWallet()) return;
+    showToast(`Отправка ${c.ticker}`);
+  };
+
   return (
     <div className="relative min-h-screen">
-      <Header />
+      <Header
+        connection={connection}
+        onConnect={() => setWalletOpen(true)}
+        onDisconnect={() => {
+          setConnection(null);
+          showToast('Кошелёк отключён');
+        }}
+      />
 
       <main className="relative z-[2] max-w-[1440px] mx-auto px-4 md:px-8 py-8 md:py-10 space-y-10">
-        {/* HERO / page title */}
+        {/* HERO */}
         <section className="space-y-6">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -52,11 +88,24 @@ const Marketplace = () => {
                 </span>
               </div>
               <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-tight text-white">
-                Маркетплейс <span className="bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-400 text-transparent bg-clip-text">MoveInvestor</span>
+                Маркетплейс{' '}
+                <span className="bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-yellow-400 text-transparent bg-clip-text">
+                  MoveInvestor
+                </span>
               </h1>
               <p className="mt-2 text-sm md:text-base text-gray-400 max-w-xl">
                 Открывай сундуки, собирай криптомонеты, прокачивай свою коллекцию и торгуй на живом рынке.
               </p>
+              {!connection && (
+                <button
+                  data-testid="hero-connect-btn"
+                  onClick={() => setWalletOpen(true)}
+                  className="btn-tactile btn-tactile-cyan mt-4 flex items-center gap-2"
+                >
+                  <Lock size={14} />
+                  Подключить кошелёк для игры
+                </button>
+              )}
             </div>
             <StatsBento />
           </div>
@@ -83,8 +132,8 @@ const Marketplace = () => {
               <Lootbox3D
                 key={chest.id}
                 chest={chest}
-                onBuy={(c) => showToast(`Добавлен в корзину: ${c.name}`)}
-                onOpen={(c) => setOpeningChest(c)}
+                onBuy={handleBuyChest}
+                onOpen={handleOpenChest}
               />
             ))}
           </div>
@@ -96,9 +145,7 @@ const Marketplace = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-wide text-white">
               Криптомонеты
             </h2>
-            <div className="font-mono-data text-xs text-gray-400">
-              {filtered.length} карт
-            </div>
+            <div className="font-mono-data text-xs text-gray-400">{filtered.length} карт</div>
           </div>
           <FilterTabs
             activeCategory={activeCategory}
@@ -108,19 +155,13 @@ const Marketplace = () => {
             sort={sort}
             onSortChange={setSort}
           />
-
           <motion.div
             layout
             className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4"
             data-testid="cards-grid"
           >
             {filtered.map((card) => (
-              <CryptoCard
-                key={card.ticker}
-                card={card}
-                onSell={(c) => showToast(`Выставлено на продажу: ${c.ticker}`)}
-                onSend={(c) => showToast(`Отправка ${c.ticker}`)}
-              />
+              <CryptoCard key={card.ticker} card={card} onSell={handleSell} onSend={handleSend} />
             ))}
             {filtered.length === 0 && (
               <div className="col-span-full py-16 text-center text-gray-500">
@@ -130,7 +171,6 @@ const Marketplace = () => {
           </motion.div>
         </section>
 
-        {/* Footer teaser */}
         <footer className="pt-10 pb-6 border-t border-white/5 text-center">
           <p className="font-display uppercase tracking-widest text-xs text-gray-600">
             MoveInvestor · Играй · Собирай · Прокачивай
@@ -138,7 +178,6 @@ const Marketplace = () => {
         </footer>
       </main>
 
-      {/* Toast */}
       {toast && (
         <div
           data-testid="toast"
@@ -149,10 +188,19 @@ const Marketplace = () => {
         </div>
       )}
 
-      {/* Chest opening */}
       {openingChest && (
         <ChestOpenModal chest={openingChest} onClose={() => setOpeningChest(null)} />
       )}
+
+      <WalletConnectModal
+        open={walletOpen}
+        onClose={() => setWalletOpen(false)}
+        onConnected={(data) => {
+          setConnection(data);
+          setWalletOpen(false);
+          showToast(`Кошелёк ${data.wallet.name} подключён`);
+        }}
+      />
     </div>
   );
 };

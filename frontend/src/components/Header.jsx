@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wallet, ShoppingCart, TrendingUp, Trophy, BarChart3, Power, ChevronDown } from 'lucide-react';
+import { Wallet, ShoppingCart, TrendingUp, Trophy, BarChart3, Power, ChevronDown, Plug } from 'lucide-react';
 
 const NAV = [
   { id: 'wallet', label: 'Кошелёк', icon: Wallet },
@@ -9,9 +9,12 @@ const NAV = [
   { id: 'leaderboard', label: 'Лидерборд', icon: Trophy },
 ];
 
-const Header = ({ balance = 4.28 }) => {
+const shortAddr = (a) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '');
+
+const Header = ({ connection, onConnect, onDisconnect }) => {
   const [active, setActive] = useState('marketplace');
   const [lang, setLang] = useState('RU');
+  const isConnected = !!connection?.address;
 
   return (
     <header
@@ -79,28 +82,45 @@ const Header = ({ balance = 4.28 }) => {
         {/* TESTNET */}
         <span className="testnet-badge hidden md:inline-block" data-testid="testnet-badge">TESTNET</span>
 
-        {/* Wallet balance */}
-        <div
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md glass-light"
-          data-testid="wallet-balance"
-        >
-          <div className="w-6 h-6 rounded-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #00F0FF, #B026FF)' }}>
-            <Wallet size={12} className="text-black" />
-          </div>
-          <span className="font-mono-data text-sm font-bold text-white">{balance.toFixed(2)}</span>
-          <span className="text-xs text-gray-400 font-display">MOVE</span>
-          <ChevronDown size={12} className="text-gray-500" />
-        </div>
+        {isConnected ? (
+          <>
+            {/* Wallet balance + address */}
+            <div
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md glass-light"
+              data-testid="wallet-balance"
+              title={connection.address}
+            >
+              <div className="w-6 h-6 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #00F0FF, #B026FF)' }}>
+                <Wallet size={12} className="text-black" />
+              </div>
+              <div className="flex flex-col leading-tight">
+                <span className="font-mono-data text-sm font-bold text-white">{connection.balance.toFixed(2)} <span className="text-xs text-gray-400 font-display">MOVE</span></span>
+                <span className="font-mono-data text-[10px] text-gray-400">{shortAddr(connection.address)}</span>
+              </div>
+              <ChevronDown size={12} className="text-gray-500" />
+            </div>
 
-        {/* Disconnect */}
-        <button
-          data-testid="disconnect-btn"
-          className="btn-tactile btn-tactile-ghost text-xs py-1.5 px-3 flex items-center gap-1.5"
-        >
-          <Power size={12} />
-          <span className="hidden sm:inline">Отключить</span>
-        </button>
+            {/* Disconnect */}
+            <button
+              data-testid="disconnect-btn"
+              onClick={onDisconnect}
+              className="btn-tactile btn-tactile-ghost text-xs py-1.5 px-3 flex items-center gap-1.5"
+            >
+              <Power size={12} />
+              <span className="hidden sm:inline">Отключить</span>
+            </button>
+          </>
+        ) : (
+          <button
+            data-testid="connect-btn"
+            onClick={onConnect}
+            className="btn-tactile btn-tactile-cyan text-xs py-2 px-4 flex items-center gap-1.5"
+          >
+            <Plug size={12} />
+            <span>Подключить кошелёк</span>
+          </button>
+        )}
       </div>
     </header>
   );
